@@ -294,6 +294,23 @@ ESPPreferenceObject ESPPreferences::make_preference(size_t length, uint32_t type
   return pref;
 }
 #endif
+
+#ifdef ARDUINO_ARCH_SAMD
+bool ESPPreferenceObject::save_internal_() { return false; }
+
+bool ESPPreferenceObject::load_internal_() { return false; }
+
+ESPPreferences::ESPPreferences() : current_offset_(0) {}
+
+void ESPPreferences::begin() {}
+
+ESPPreferenceObject ESPPreferences::make_preference(size_t length, uint32_t type, bool in_flash) {
+  auto pref = ESPPreferenceObject(this->current_offset_, length, type);
+  this->current_offset_++;
+  return pref;
+}
+#endif
+
 uint32_t ESPPreferenceObject::calculate_crc_() const {
   uint32_t crc = this->type_;
   for (size_t i = 0; i < this->length_words_; i++) {

@@ -43,6 +43,7 @@ bool network_is_connected() {
 bool mdns_setup;
 #endif
 
+#if defined(ARDUINO_ARCH_ESP8266) || defined(ARDUINO_ARCH_ESP32)
 #ifdef ARDUINO_ARCH_ESP8266
 void network_setup_mdns(IPAddress address, int interface) {
   // Latest arduino framework breaks mDNS for AP interface
@@ -73,6 +74,7 @@ void network_setup_mdns(IPAddress address, int interface) {
     }
 #endif
   }
+#endif
   void network_tick_mdns() {
 #ifdef ARDUINO_ARCH_ESP8266
     if (mdns_setup)

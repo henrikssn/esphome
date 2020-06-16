@@ -11,7 +11,7 @@ import re
 from typing import Any, Dict, List, Optional, Set  # noqa
 
 from esphome.const import CONF_ARDUINO_VERSION, SOURCE_FILE_EXTENSIONS, \
-    CONF_COMMENT, CONF_ESPHOME, CONF_USE_ADDRESS, CONF_WIFI
+    CONF_COMMENT, CONF_ESPHOME, CONF_USE_ADDRESS, CONF_WIFI, ESP_PLATFORM_SAMD
 from esphome.helpers import ensure_unique_string, is_hassio
 from esphome.util import OrderedDict
 
@@ -615,6 +615,12 @@ class EsphomeCore:
         if self.esp_platform is None:
             raise ValueError("No platform specified")
         return self.esp_platform == 'ESP32'
+
+    @property
+    def is_samd(self):
+        if self.esp_platform is None:
+            raise ValueError("No platform specified")
+        return self.esp_platform == ESP_PLATFORM_SAMD
 
     def add_job(self, func, *args, **kwargs):
         coro = coroutine(func)

@@ -34,6 +34,8 @@ def validate_board(value):
         board_pins = pins.ESP8266_BOARD_PINS
     elif CORE.is_esp32:
         board_pins = pins.ESP32_BOARD_PINS
+    elif CORE.is_samd:
+        board_pins = pins.SAMD_BOARD_PINS
     else:
         raise NotImplementedError
 
@@ -72,6 +74,10 @@ PLATFORMIO_ESP32_LUT = {
     'DEV': ARDUINO_VERSION_ESP32_DEV,
 }
 
+PLATFORMIO_SAMD_LUT = {
+    'RECOMMENDED': 'atmelsam',
+}
+
 
 def validate_arduino_version(value):
     value = cv.string_strict(value)
@@ -91,6 +97,14 @@ def validate_arduino_version(value):
                              "espressif32@<platformio version>".format(value))
         if value_ in PLATFORMIO_ESP32_LUT:
             return PLATFORMIO_ESP32_LUT[value_]
+        return value
+    if CORE.is_samd:
+        if VERSION_REGEX.match(value) is not None and value_ not in PLATFORMIO_SAMD_LUT:
+            raise cv.Invalid("Unfortunately the arduino framework version '{}' is unsupported "
+                             "at this time. You can override this by manually using "
+                             "espressif32@<platformio version>".format(value))
+        if value_ in PLATFORMIO_SAMD_LUT:
+            return PLATFORMIO_SAMD_LUT[value_]
         return value
     raise NotImplementedError
 
@@ -117,7 +131,7 @@ def valid_include(value):
 
 CONFIG_SCHEMA = cv.Schema({
     cv.Required(CONF_NAME): cv.valid_name,
-    cv.Required(CONF_PLATFORM): cv.one_of('ESP8266', 'ESP32', upper=True),
+    cv.Required(CONF_PLATFORM): validate_platform,
     cv.Required(CONF_BOARD): validate_board,
     cv.Optional(CONF_COMMENT): cv.string,
     cv.Optional(CONF_ARDUINO_VERSION, default='recommended'): validate_arduino_version,

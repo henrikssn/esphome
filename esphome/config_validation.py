@@ -1139,10 +1139,11 @@ class GenerateID(Optional):
 class SplitDefault(Optional):
     """Mark this key to have a split default for ESP8266/ESP32."""
 
-    def __init__(self, key, esp8266=vol.UNDEFINED, esp32=vol.UNDEFINED):
+    def __init__(self, key, esp8266=vol.UNDEFINED, esp32=vol.UNDEFINED, samd=vol.UNDEFINED):
         super().__init__(key)
         self._esp8266_default = vol.default_factory(esp8266)
         self._esp32_default = vol.default_factory(esp32)
+        self._samd_default = vol.default_factory(samd)
 
     @property
     def default(self):
@@ -1150,6 +1151,8 @@ class SplitDefault(Optional):
             return self._esp8266_default
         if CORE.is_esp32:
             return self._esp32_default
+        if CORE.is_samd:
+            return self._samd_default
         raise ValueError
 
     @default.setter

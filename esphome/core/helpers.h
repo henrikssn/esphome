@@ -16,7 +16,15 @@
 #define ICACHE_RODATA_ATTR
 #endif
 
+#ifdef ARDUINO_ARCH_SAMD
+#define ICACHE_RAM_ATTR
+#endif
+
+#if defined(ARDUINO_ARCH_ESP8266) || defined(ARDUINO_ARCH_ESP32)
 #define HOT __attribute__((hot))
+#else
+#define HOT
+#endif
 #define ESPDEPRECATED(msg) __attribute__((deprecated(msg)))
 #define ALWAYS_INLINE __attribute__((always_inline))
 #define PACKED __attribute__((packed))

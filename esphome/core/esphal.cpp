@@ -34,6 +34,10 @@ GPIOPin::GPIOPin(uint8_t pin, uint8_t mode, bool inverted)
       gpio_read_(pin < 32 ? &GPIO.in : &GPIO.in1.val),
       gpio_mask_(pin < 32 ? (1UL << pin) : (1UL << (pin - 32)))
 #endif
+#ifdef ARDUINO_ARCH_SAMD
+          gpio_read_(nullptr),
+      gpio_mask_(0)
+#endif
 {
 }
 
@@ -49,6 +53,7 @@ const char *GPIOPin::get_pin_mode_name() const {
     case INPUT_PULLUP:
       mode_s = "INPUT_PULLUP";
       break;
+#if defined(ARDUINO_ARCH_ESP8266) || defined(ARDUINO_ARCH_ESP32)
     case OUTPUT_OPEN_DRAIN:
       mode_s = "OUTPUT_OPEN_DRAIN";
       break;
@@ -67,6 +72,7 @@ const char *GPIOPin::get_pin_mode_name() const {
     case FUNCTION_4:
       mode_s = "FUNCTION_4";
       break;
+#endif
 
 #ifdef ARDUINO_ARCH_ESP32
     case PULLUP:

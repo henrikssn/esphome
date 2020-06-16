@@ -56,6 +56,10 @@ ESP8266_BOARD_PINS = {
     'xinabox_cw01': {'SDA': 2, 'SCL': 14, 'LED': 5, 'LED_RED': 12, 'LED_GREEN': 13}
 }
 
+SAMD_BOARD_PINS = {
+    'moteino_zero': {},
+}
+
 FLASH_SIZE_1_MB = 2 ** 20
 FLASH_SIZE_512_KB = FLASH_SIZE_1_MB // 2
 FLASH_SIZE_2_MB = 2 * FLASH_SIZE_1_MB
@@ -321,6 +325,10 @@ def validate_gpio_pin(value):
             _LOGGER.warning("ESP8266: Pin %s (9-10) might already be used by the "
                             "flash interface in QUAD IO flash mode.", value)
         return value
+    if CORE.is_samd:
+        if value < 0:
+            raise cv.Invalid(f"SAMD: Invalid pin number: {value}")
+        return value
     raise NotImplementedError
 
 
@@ -354,6 +362,8 @@ def output_pin(value):
         if value == 17:
             raise cv.Invalid("GPIO17 (TOUT) is an analog-only pin on the ESP8266.")
         return value
+    if CORE.is_samd:
+        return value
     raise NotImplementedError
 
 
@@ -383,6 +393,9 @@ PIN_MODES_ESP32 = [
     'PULLUP', 'PULLDOWN', 'INPUT_PULLDOWN', 'OPEN_DRAIN', 'FUNCTION_5',
     'FUNCTION_6', 'ANALOG',
 ]
+PIN_MODES_SAMD = [
+    'INPUT', 'OUTPUT', 'INPUT_PULLUP', 'ANALOG',
+]
 
 
 def pin_mode(value):
@@ -390,6 +403,8 @@ def pin_mode(value):
         return cv.one_of(*PIN_MODES_ESP32, upper=True)(value)
     if CORE.is_esp8266:
         return cv.one_of(*PIN_MODES_ESP8266, upper=True)(value)
+    if CORE.is_samd:
+        return cv.one_of(*PIN_MODES_SAMD, upper=True)(value)
     raise NotImplementedError
 
 

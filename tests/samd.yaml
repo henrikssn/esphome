@@ -1,0 +1,8 @@
+esphome:
+  name: samd21
+  platform: ATMELSAM
+  board: moteino_zero
+  build_path: build/samd
+
+status_led:
+  pin: 2

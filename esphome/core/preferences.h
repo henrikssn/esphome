@@ -49,6 +49,10 @@ static bool DEFAULT_IN_FLASH = false;
 static bool DEFAULT_IN_FLASH = true;
 #endif
 
+#ifdef ARDUINO_SAMD_ZERO
+static bool DEFAULT_IN_FLASH = true;
+#endif
+
 class ESPPreferences {
  public:
   ESPPreferences();

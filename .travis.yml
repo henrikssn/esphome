@@ -22,6 +22,7 @@ matrix:
         - esphome tests/test2.yaml compile
         - esphome tests/test3.yaml compile
         - esphome tests/test4.yaml compile
+        - esphome tests/samd.yaml compile
     - env: TARGET=Cpp-Lint
       dist: trusty
       sudo: required
